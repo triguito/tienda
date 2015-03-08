@@ -58,7 +58,7 @@ class login extends CI_Controller
 				
 			$this->usuarios->AddUser($usuarios);
 			$this->mostrarPlantilla();
-			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/log_Ok','',true);
+			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/log_ok','',true);
 			$this->load->view("plantilla",$this->datos_plantilla);
 				
 				
@@ -194,7 +194,7 @@ class login extends CI_Controller
 			$cod_provincia=$this->usuarios->ProvinciaUsuario($cod_provincia[0]->provincia_cod);
 
 			$this->mostrarPlantilla();
-			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/Mod_Usu',array('usuarios'=>$this->usuarios->DatosUsuario($this->input->post('usuario')),
+			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/mod_usu',array('usuarios'=>$this->usuarios->DatosUsuario($this->input->post('usuario')),
 																						'provincias'=>$this->usuarios->ListaProvincia(),
 																						'provinciasUsus'=>$cod_provincia
 																						),true);
@@ -216,7 +216,7 @@ class login extends CI_Controller
 			
 			$this->session->set_userdata("username",$this->input->post('usuario'));
 			$this->mostrarPlantilla();
-			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/Mod_Ok','',true);
+			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/mod_ok','',true);
 			$this->load->view("plantilla",$this->datos_plantilla);
 			
 			
@@ -243,7 +243,7 @@ class login extends CI_Controller
 		if ($this->form_validation->run() == FALSE)
 		{
 			$this->mostrarPlantilla();
-			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/CambiaPass','',true);
+			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/cambiapass','',true);
 			$this->load->view("plantilla",$this->datos_plantilla);
 		}
 		else
@@ -253,10 +253,92 @@ class login extends CI_Controller
 			$this->usuarios->CambiaPass($datos,$this->input->post('pass'));
 			
 			$this->mostrarPlantilla();
-			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/CambiaPass_Ok','',true);
+			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/cambiapass_ok','',true);
 			$this->load->view("plantilla",$this->datos_plantilla);
 				
 		}
+		
+	}
+	public function RestauraPass()
+	{
+		$this->form_validation->set_rules('email', 'Email', 'required|valid_email|callback_CompruebaMail');
+		if ($this->form_validation->run() == FALSE)
+		{
+			$this->mostrarPlantilla();
+			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/RestauraPass','',true);
+			$this->load->view("plantilla",$this->datos_plantilla);
+		}
+		else 
+		{
+			$this->load->library('email');
+			$this->load->helper('security');
+			
+			$config['protocol'] = 'smtp';
+			$config['smtp_host'] = 'mail.iessansebastian.com';
+			$config['smtp_user'] = 'aula4@iessansebastian.com';
+			$config['smtp_pass'] = 'daw2alumno';
+			
+			$this->email->initialize($config);
+	
+			
+			$cuerpo=rand(10000,9999999);
+			$cifrada=do_hash($cuerpo,'md5');
+			$datos=Array('contraseña'=>$cifrada);
+			
+			$this->usuarios->CambiaPassConEmail($datos,$this->input->post('email'));
+			
+			$this->EnviaCorreo($this->input->post('email'),$cuerpo);	
+		
+		}
+	}
+	private function EnviaCorreo($destino,$cuerpo)
+	{
+		$this->email->from('aula4@iessansebastian.com', 'Restaurar Contraseña');
+		$this->email->to($destino);
+		$this->email->subject('Restaurar Contraseña Tienda');
+		$this->email->message('La contraseña es '.$cuerpo);
+	
+		if ( $this->email->send() )
+		{
+			$this->mostrarPlantilla();
+			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/restaurarpass_ok','',true);
+			$this->load->view("plantilla",$this->datos_plantilla);
+		}
+		else
+		{
+			$this->mostrarPlantilla();
+			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/restaurapass_fail','',true);
+			$this->load->view("plantilla",$this->datos_plantilla);
+		}
+	
+		//echo $this->email->print_debugger();
+	}
+		
+	public function CompruebaMail($email)
+	{
+		if($this->usuarios->DevuelveEmail($email)==1)
+		{
+			return true;
+		}
+		else
+		{
+			$this->form_validation->set_message('CompruebaMail', 'Email Incorrecto');
+			return false;
+		}
+		
+	}
+	function Listapedidos()
+	{
+		$this->mostrarPlantilla();
+		$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/listapedidos',array('pedidos'=>$this->usuarios->ListaPedidos()),true);
+		$this->load->view("plantilla",$this->datos_plantilla);
+	}
+	function CancelarPedido($cod)
+	{
+		$this->usuarios->CancelarPedido($cod);
+		$this->mostrarPlantilla();
+		$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/listapedidos',array('pedidos'=>$this->usuarios->ListaPedidos()),true);
+		$this->load->view("plantilla",$this->datos_plantilla);
 		
 	}
 	

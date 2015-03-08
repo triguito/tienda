@@ -1,5 +1,5 @@
 
-<h2>Registro de usuario</h2>
+<h2>Cambia Contraseña</h2>
 <div class="col-xs-5">
 
 	<?php echo form_open('login/CambiarPass'); ?>
@@ -17,7 +17,7 @@
 		</div>
 		
 		<input type="submit" class="btn btn-default" value="enviar">
-		<a href="<?=base_url("/index.php/login/")?>">Atras</a>
+		<a href="<?=site_url("login/")?>">Atras</a>
 		</form>
 </div>
 

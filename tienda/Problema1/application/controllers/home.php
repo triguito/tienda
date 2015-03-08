@@ -98,13 +98,14 @@ class home extends CI_Controller
 		);
 		
 		$this->carrito->insert($producto);
+		redirect(site_url("/home/verCarrito"));
 	}
 	
 	public function VerCarrito()
 	{	
 		//$this->cart->contents();
 	
-		$this->datos_plantilla["cuerpo"] = $this->load->view('cuerpos/cuerpoCarrito',array('carrito'=>$this->cart->contents()),true );
+		$this->datos_plantilla["cuerpo"] = $this->load->view('cuerpos/cuerpocarrito',array('carrito'=>$this->cart->contents()),true );
 		$this->mostrarPlantilla();
 		//$this->load->view("plantilla",$this->datos_plantilla);	
 	}
@@ -112,6 +113,7 @@ class home extends CI_Controller
 	public function EmilinarCompra()
 	{
 		$this->carrito->destroy();
+		redirect(site_url("/home/verCarrito"));
 	}
 	
 	public function EliminaProducto($id)

@@ -15,7 +15,7 @@
 	</div>
 	
 	<input type="submit" class="btn btn-default" value="Entrar">
-	<a href="<?=base_url("/index.php/home/index/")?>">¿Ha olvidado la contraseña?</a>
+	<a href="<?=base_url("/index.php/login/restaurapass/")?>">¿Ha olvidado la contraseña?</a>
 	</form>
 </div>
 <div class="col-xs-6">

@@ -72,4 +72,36 @@ class usuarios extends CI_Model
 		$this->db->where('contraseña', $pass);
 		$this->db->update('usuario', $datos);
 	}
+	function DevuelveEmail($email)
+	{
+		$this->db->where('email', $email);
+		$query=$this->db->get("usuario");
+		return $query->num_rows();
+	}
+	function CambiaPassConEmail($datos,$email)
+	{
+		$this->db->where('email', $email);
+		$this->db->update('usuario', $datos);
+	}
+	function codUsu()
+	{
+		$this->db->select("id");
+		$this->db->where('nombreUsu',$this->session->userdata("username"));
+		$query=$this->db->get("usuario");
+		return $query->result();
+	}
+	function ListaPedidos()
+	{
+		$codUsu=$this->codUsu();
+		
+		$this->db->where("usuario_id",$codUsu[0]->id);
+		$query=$this->db->get("pedido");
+		return $query->result();
+	}
+	function CancelarPedido($cod)
+	{
+		$datos=Array('estado'=>'a');
+		$this->db->where('id', $cod);
+		$this->db->update('pedido', $datos);
+	}
 }

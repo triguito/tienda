@@ -3,7 +3,7 @@
     <?php 
     	foreach ($categorias as $categoria)
     	{
-    		echo '<a href='.base_url("index.php/home/categoria/".$categoria->id).' class="list-group-item list-group-item-success">'.$categoria->nombre.'</a>';
+    		echo '<a href='.site_url("home/categoria/".$categoria->id).' class="list-group-item list-group-item-success">'.$categoria->nombre.'</a>';
     	}
     ?>
 </div>

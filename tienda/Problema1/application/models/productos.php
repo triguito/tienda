@@ -63,6 +63,12 @@ class productos extends CI_Model
 	 	$query=$this->db->get("producto");
 	 	return $query->result();
 	 }
+	 function VerProduco($id)
+	 {
+	 	$this->db->where('id',$id);
+	 	$query=$this->db->get("producto");
+	 	return $query->result();
+	 }
 	 
 	
 	 

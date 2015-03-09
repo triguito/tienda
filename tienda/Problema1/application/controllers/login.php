@@ -194,7 +194,7 @@ class login extends CI_Controller
 			$cod_provincia=$this->usuarios->ProvinciaUsuario($cod_provincia[0]->provincia_cod);
 
 			$this->mostrarPlantilla();
-			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/mod_usu',array('usuarios'=>$this->usuarios->DatosUsuario($this->input->post('usuario')),
+			$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/mod_usu',array('usuarios'=>$this->usuarios->DatosUsuario($this->session->userdata("username")),
 																						'provincias'=>$this->usuarios->ListaProvincia(),
 																						'provinciasUsus'=>$cod_provincia
 																						),true);
@@ -340,6 +340,82 @@ class login extends CI_Controller
 		$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/listapedidos',array('pedidos'=>$this->usuarios->ListaPedidos()),true);
 		$this->load->view("plantilla",$this->datos_plantilla);
 		
+	}
+	function RealizarPedido()
+	{
+		$this->load->helper('date');
+		$bandera=false;
+		if($this->cart->total()=='0')
+		{
+			redirect(site_url("/login/CarroVacio"));
+		}
+		else
+		{
+		$datestring = "%Y-%m-%d %h:%i:%s";
+		$time = time();
+		$fecactual=mdate($datestring, $time);
+		
+		$fecha= new DateTime($fecactual);
+		$entrega=$fecha->add(new DateInterval("P14D"));
+		
+		$usuario=$this->usuarios->DatosUsuario($this->session->userdata("username"));
+		
+		$datos=Array(
+					'codPedido'=>$cuerpo=rand(10000,9999999),
+					'fechaPedido'=>$fecactual,
+					'fechaEntrega'=>$entrega->format("Y-m-d"),
+					'estado'=>'p',
+					'cantidadDisponible'=>'10',
+					'nombreUsu'=>$usuario[0]->nombre,
+					'apellidoUsu'=>$usuario[0]->apellido,
+					'dniUsu'=>$usuario[0]->dni,
+					'direccionUsu'=>$usuario[0]->direccion,
+					'cpUsu'=>$usuario[0]->cp,
+					'provinciaUsu'=>$usuario[0]->provincia_cod,
+					'usuario_id'=>$usuario[0]->id
+					);
+		$this->usuarios->RealizarPedido($datos);
+		
+		redirect("/login/LineaPedido");
+		}
+		
+		
+	}
+	function LineaPedido()
+	{
+		$idPedido= $this->usuarios->CodUltimoPedido();
+		$productos=$this->cart->contents();
+		
+		foreach ($productos as $producto)
+		{
+			$datos=Array(
+					'producto_id'=>$producto['id'],
+					'pedido_id'=>$idPedido[0]->id,
+					'cantidad'=>$producto['qty'],
+					'PrecioVenta'=>$producto['subtotal'],
+			);
+			$this->usuarios->AddLineaPedido($datos);
+		}
+		$this->carrito->destroy();
+		redirect("/login/Listapedidos");
+		
+	}
+	function VerLineaPedido($codPedido)
+	{
+		$LineaPedido=$this->usuarios->VerLineaPedido($codPedido);
+
+		$productos=$this->productos->VerProduco($LineaPedido[0]->producto_id);
+		
+		$this->mostrarPlantilla();
+		$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/lineapedido',array('LineaPedidos'=>$LineaPedido,
+																						'productos'=>$productos),true);
+		$this->load->view("plantilla",$this->datos_plantilla);
+	}
+	function CarroVacio()
+	{
+		$this->mostrarPlantilla();
+		$this->datos_plantilla["cuerpo"]= $this->load->view('cuerpos/CarroVacio',"",true);
+		$this->load->view("plantilla",$this->datos_plantilla);
 	}
 	
 }

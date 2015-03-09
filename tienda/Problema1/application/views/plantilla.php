@@ -12,7 +12,7 @@
 <body>
 <div id="cabecera" class="navbar navbar-default">
       <div class="container">
-		<div class="col-xs-6">
+		<div class="col-xs-12">
 			<?=$cabecera?>
 		</div>
 	</div>

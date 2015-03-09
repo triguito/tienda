@@ -29,13 +29,17 @@
 	</table>
 </div>
 <div>
-	<div class="col-lg-6">
-  		 <a href="<?=base_url("/index.php/home/EmilinarCompra/")?>">Eliminar Compra </a>
+	<div class="col-lg-4">
+  		 <a href="<?=base_url("/index.php/home/EmilinarCompra/")?>">Eliminar Carrito </a>
   	</div>
   	
   	<div class="col-lg-6">
-  		Es necesario estar registrado para completar la compra
+  	<?php if($this->session->userdata('logueado')==false)
+  	{?>		Debe de acceder a su cuenta->
   		 <a href="<?=base_url("/index.php/login/index/")?>">Acceder </a>
+  	<?php }?>		 
+  	<a href="<?=base_url("/index.php/login/RealizarPedido/")?>">Realizar pedido </a>
+
   	</div>
 </div>
 

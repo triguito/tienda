@@ -104,4 +104,24 @@ class usuarios extends CI_Model
 		$this->db->where('id', $cod);
 		$this->db->update('pedido', $datos);
 	}
+	function RealizarPedido($datos)
+	{
+		$this->db->insert('pedido', $datos);
+	}
+	function CodUltimoPedido()
+	{
+		$this->db->select_max('id');
+		$query = $this->db->get('pedido');
+		return $query->result();
+	}
+	function AddLineaPedido($datos)
+	{
+		$this->db->insert('lineapedido', $datos);
+	}
+	function VerLineaPedido($codpedido)
+	{
+		$this->db->where('pedido_id',$codpedido);
+		$query = $this->db->get('lineapedido');
+		return $query->result();
+	}
 }

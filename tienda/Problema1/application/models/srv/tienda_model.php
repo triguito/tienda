@@ -25,11 +25,11 @@ class Tienda_model extends CI_Model
         $query = $this->db->get('producto', $limit, $offset);
         $listaProductos = $query->result_array();
         
-        $base=site_url(base_url("/img"));
+        $URL=base_url("/img")."/";
         
         foreach ($listaProductos as $key => $item) {
             $lista[$key]['nombre'] = $item['nombre'];
-            $lista[$key]['img'] = $item[$base.'Imagen'];
+            $lista[$key]['img'] = $URL.$item["Imagen"];
             $lista[$key]['descripcion'] = $item['descripcion'];
             $lista[$key]['precio'] = $item['PrecioVenta'];
             $lista[$key]['url'] = site_url('home/index/');

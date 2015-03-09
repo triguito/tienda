@@ -33,7 +33,10 @@
         			</td>
         			<?php if($pedido->estado=='p'):?>
         			<td>
-        				<a href="<?=base_url("/index.php/login/CancelarPedido/$pedido->codPedido")?>">Cancelar pedido</a>
+        				<a href="<?=base_url("/index.php/login/CancelarPedido/$pedido->id")?>">Cancelar pedido</a>
+        			</td>
+        			<td>
+        				<a href="<?=base_url("/index.php/login/VerLineaPedido/$pedido->id")?>">Ver detalles</a>
         			</td>
         			<?php endif;?>
         		</tr>	
